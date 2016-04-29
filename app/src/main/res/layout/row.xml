@@ -12,8 +12,8 @@
         android:background="@android:drawable/dialog_holo_light_frame">
 
         <ImageView
-            android:id="@+id/Thumbnail"
-            android:layout_width="wrap_content"
+            android:id="@+id/thumbnail"
+            android:layout_width="80dp"
             android:layout_height="60dp"
             android:background="#000000"
             android:scaleType="centerCrop"/>

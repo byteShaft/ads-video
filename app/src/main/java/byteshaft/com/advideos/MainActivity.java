@@ -1,7 +1,10 @@
 package byteshaft.com.advideos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,17 +26,21 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
     public File path = Environment.getExternalStorageDirectory();
-    ArrayList<String> FilesInFolder;
+    public static ArrayList<String> filesInFolder;
+    private CustomVideoView customVideoView;
+    public static final String KEY = "path";
+    public static final String POSITION = "position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mListView = (ListView) findViewById(R.id.video_list);
-        FilesInFolder = GetFiles(path + "/Videos");
+        filesInFolder = GetFiles(path + "/Videos");
         ArrayAdapter<String> arrayAdapter = new VideoListAdapter(this,
-                android.R.layout.simple_list_item_1, FilesInFolder);
+                android.R.layout.simple_list_item_1, filesInFolder);
         mListView.setAdapter(arrayAdapter);
+        mListView.setOnItemClickListener(new ListItemCLickListener());
     }
 
     public ArrayList<String> GetFiles(String DirectoryPath) {
@@ -43,6 +51,17 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < files.length; i++)
             MyFiles.add(files[i].getName());
         return MyFiles;
+    }
+
+    private class ListItemCLickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(getApplicationContext(), CustomVideoView.class);
+            intent.putExtra(KEY, path + "/Videos/" + parent.getItemAtPosition(position).toString());
+            intent.putExtra("position",position);
+            startActivity(intent);
+        }
     }
 
 
@@ -59,18 +78,21 @@ class VideoListAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = getLayoutInflater();
             convertView = inflater.inflate(R.layout.row, parent, false);
             holder = new ViewHolder();
-            holder.thumbnail = (ImageView) convertView.findViewById(R.id.Thumbnail);
+            holder.thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail
+                (path + "/Videos/" + filesInFolder.get(position), MediaStore.Video.Thumbnails.MICRO_KIND);
+        holder.thumbnail.setImageBitmap(bitmap);
         return convertView;
     }
 
 }
 
 class ViewHolder {
-    public TextView title;
     public ImageView thumbnail;
 }
 }
