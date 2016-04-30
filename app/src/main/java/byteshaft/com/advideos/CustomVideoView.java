@@ -3,6 +3,7 @@ package byteshaft.com.advideos;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.VideoView;
 
@@ -10,6 +11,7 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
 
     public VideoView videoView;
     public String position;
+    public int file = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

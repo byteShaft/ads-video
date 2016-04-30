@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
-    public File path = Environment.getExternalStorageDirectory();
+    public static File path = Environment.getExternalStorageDirectory();
     public static ArrayList<String> filesInFolder;
     private CustomVideoView customVideoView;
     public static final String KEY = "path";
@@ -59,40 +60,43 @@ public class MainActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent(getApplicationContext(), CustomVideoView.class);
             intent.putExtra(KEY, path + "/Videos/" + parent.getItemAtPosition(position).toString());
-            intent.putExtra("position",position);
+            intent.putExtra("position", position);
             startActivity(intent);
         }
     }
 
 
-class VideoListAdapter extends ArrayAdapter<String> {
+    class VideoListAdapter extends ArrayAdapter<String> {
 
-    public VideoListAdapter(Context context, int resource, ArrayList<String> videos) {
-        super(context, resource, videos);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            LayoutInflater inflater = getLayoutInflater();
-            convertView = inflater.inflate(R.layout.row, parent, false);
-            holder = new ViewHolder();
-            holder.thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
+        public VideoListAdapter(Context context, int resource, ArrayList<String> videos) {
+            super(context, resource, videos);
         }
 
-        Bitmap bitmap = ThumbnailUtils.createVideoThumbnail
-                (path + "/Videos/" + filesInFolder.get(position), MediaStore.Video.Thumbnails.MICRO_KIND);
-        holder.thumbnail.setImageBitmap(bitmap);
-        return convertView;
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            if (convertView == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.row, parent, false);
+                holder = new ViewHolder();
+                holder.position = position;
+                holder.thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
+                holder.title = (TextView) convertView.findViewById(R.id.FilePath);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.title.setText(filesInFolder.get(position));
+            new ThumbnailCreationTask(getApplicationContext(), holder, position).execute();
+            return convertView;
+        }
+
     }
 
-}
 
-class ViewHolder {
-    public ImageView thumbnail;
-}
+    class ViewHolder {
+        public ImageView thumbnail;
+        public TextView title;
+        public int position;
+    }
 }
