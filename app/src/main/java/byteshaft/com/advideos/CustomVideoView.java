@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -18,6 +19,7 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
 
     public VideoView videoView;
     public String position;
+    public int file = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
