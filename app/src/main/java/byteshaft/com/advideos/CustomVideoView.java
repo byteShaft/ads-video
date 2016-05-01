@@ -4,8 +4,8 @@ package byteshaft.com.advideos;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -26,11 +26,13 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
     public int position;
     public int file = 0;
     private MediaController mediaController;
+    public static CustomVideoView customVideoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_view);
+        customVideoView = this;
         String path = getIntent().getStringExtra(MainActivity.KEY);
         position = getIntent().getIntExtra(MainActivity.POSITION, 0);
         startVideo(path);
@@ -152,7 +154,7 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
 
     @Override
     public void onBackPressed() {
-//        enterPasswordDialog();
-        super.onBackPressed();
+        Log.i("TAG", "onBackPressed");
+        startActivity(new Intent(this, PasswordActivity.class));
     }
 }

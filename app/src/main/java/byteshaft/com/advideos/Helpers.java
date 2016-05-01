@@ -36,6 +36,5 @@ public class Helpers {
     public static String getPassword() {
         SharedPreferences sharedPreferences = getPreferenceManager();
         return sharedPreferences.getString(AppGlobals.PASSWORD, "");
-
     }
 }

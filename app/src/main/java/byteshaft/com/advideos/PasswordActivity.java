@@ -2,7 +2,6 @@ package byteshaft.com.advideos;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -38,9 +37,12 @@ public class PasswordActivity extends Activity {
     private ImageView backSpace;
     private ImageView buttonOk;
 
+    private CustomVideoView customVideoView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        customVideoView = new CustomVideoView();
         MainActivity.getInstance().openedOnce = false;
         appContext = this;
         userEntered = "";
@@ -94,10 +96,6 @@ public class PasswordActivity extends Activity {
         buttonExit.setOnClickListener(new View.OnClickListener() {
                                           public void onClick(View v) {
                                               //Exit app
-                                              Intent i = new Intent();
-                                              i.setAction(Intent.ACTION_MAIN);
-                                              i.addCategory(Intent.CATEGORY_HOME);
-                                              appContext.startActivity(i);
                                               finish();
 
                                           }
@@ -121,6 +119,7 @@ public class PasswordActivity extends Activity {
                         //Check if entered PIN is correct
                         if (userEntered.equals(userPin)) {
                             Log.v("PinView", "Correct PIN");
+                            CustomVideoView.customVideoView.finish();
                             finish();
                         } else {
                             keyPadLockedFlag = true;
@@ -159,15 +158,6 @@ public class PasswordActivity extends Activity {
         button9 = (Button) findViewById(R.id.button9);
         button9.setOnClickListener(pinButtonHandler);
         buttonDelete = (ImageView) findViewById(R.id.buttonDeleteBack);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // TODO Auto-generated method stub
-
-        //App not allowed to go back to Parent activity until correct pin entered.
-        return;
-        //super.onBackPressed();
     }
 
     @Override
