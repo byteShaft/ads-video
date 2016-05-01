@@ -1,16 +1,21 @@
 package byteshaft.com.advideos;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private CustomVideoView customVideoView;
     public static final String KEY = "path";
     public static final String POSITION = "position";
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +46,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // calling set password dialog tod
 //        setPasswordDialog(); //
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {
+            loadVideosAndSetAdapter();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("TAG", "Permission granted");
+                    loadVideosAndSetAdapter();
+                } else {
+                    Toast.makeText(MainActivity.this, "Permission denied!"
+                            , Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    private void loadVideosAndSetAdapter() {
         mListView = (ListView) findViewById(R.id.video_list);
         filesInFolder = GetFiles(path + "/Videos");
         ArrayAdapter<String> arrayAdapter = new VideoListAdapter(this,
                 android.R.layout.simple_list_item_1, filesInFolder);
         mListView.setAdapter(arrayAdapter);
         mListView.setOnItemClickListener(new ListItemCLickListener());
+
     }
 
     public ArrayList<String> GetFiles(String DirectoryPath) {

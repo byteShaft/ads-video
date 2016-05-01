@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.View;
@@ -27,14 +28,24 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
         String path = getIntent().getStringExtra(MainActivity.KEY);
         position = getIntent().getStringExtra(MainActivity.POSITION);
         videoView.setVideoPath(path);
+        videoView.setBackground(getResources().getDrawable(R.drawable.ipro));
+        videoView.setZOrderOnTop(true);
+        Helpers.setScreenBrightness(getWindow(), Screen.Brightness.HIGH);
         videoView.setOnPreparedListener(this);
         videoView.setOnCompletionListener(this);
 
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.start();
+    public void onPrepared(final MediaPlayer mp) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                videoView.setBackground(null);
+                mp.start();
+            }
+        }, 1000);
     }
 
 
@@ -105,6 +116,13 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
                 }
             }
         });
+    }
+
+    private static class Screen {
+        static class Brightness {
+            static final float HIGH = 1f;
+            static final float LOW = 0f;
+        }
     }
 
     @Override
