@@ -33,17 +33,36 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     public static File path = Environment.getExternalStorageDirectory();
     public static ArrayList<String> sFilesInFolder;
-    private CustomVideoView customVideoView;
     public static final String KEY = "path";
     public static final String POSITION = "position";
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
+    public boolean openedOnce = false;
+    public static MainActivity sInstance;
+
+    public static MainActivity getInstance() {
+        return sInstance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sInstance = this;
+        if (!Helpers.isPasswordSet()) {
+            openedOnce = true;
+            startActivity(new Intent(getApplicationContext(), PasswordActivity.class));
+        }
         setContentView(R.layout.activity_main);
         // calling set password dialog tod
 //        setPasswordDialog(); //
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!Helpers.isPasswordSet() && !openedOnce) {
+            startActivity(new Intent(getApplicationContext(), PasswordActivity.class));
+        }
+
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {

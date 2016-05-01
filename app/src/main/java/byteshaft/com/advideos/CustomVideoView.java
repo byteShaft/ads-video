@@ -42,7 +42,6 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
         videoView = (VideoView) findViewById(R.id.view);
         videoView.setVideoPath(path);
         videoView.setBackground(getResources().getDrawable(R.drawable.ipro));
-//        videoView.setZOrderOnTop(true);
         Helpers.setScreenBrightness(getWindow(), Screen.Brightness.HIGH);
         videoView.setOnPreparedListener(this);
         videoView.setOnCompletionListener(this);
@@ -97,8 +96,6 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
             }
         }
     }
-
-
 
     private void enterPasswordDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(CustomVideoView.this);

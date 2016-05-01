@@ -17,4 +17,25 @@ public class Helpers {
         layoutParams.screenBrightness = value;
         window.setAttributes(layoutParams);
     }
+
+    public static Boolean isPasswordSet() {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        return sharedPreferences.getBoolean(AppGlobals.PASSWORD_STATUS, false);
+    }
+
+    public static void passwordStatus(boolean value) {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        sharedPreferences.edit().putBoolean(AppGlobals.PASSWORD_STATUS, value).apply();
+    }
+
+    public static void savePassword(String password) {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        sharedPreferences.edit().putString(AppGlobals.PASSWORD, password).apply();
+    }
+
+    public static String getPassword() {
+        SharedPreferences sharedPreferences = getPreferenceManager();
+        return sharedPreferences.getString(AppGlobals.PASSWORD_STATUS, "");
+
+    }
 }
