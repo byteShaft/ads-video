@@ -3,12 +3,11 @@ package byteshaft.com.advideos;
 import android.app.Application;
 import android.content.Context;
 
-/**
- * Created by shahid on 29/04/2016.
- */
+
 public class AppGlobals extends Application {
 
     private static Context sContext;
+    public static final String FOLDER = "Videos";
 
     @Override
     public void onCreate() {

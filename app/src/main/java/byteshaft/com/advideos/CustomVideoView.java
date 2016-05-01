@@ -10,32 +10,45 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import java.io.File;
 
 public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     public VideoView videoView;
-    public String position;
+    public int position;
     public int file = 0;
+    private MediaController mediaController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_view);
-        videoView = (VideoView) findViewById(R.id.view);
         String path = getIntent().getStringExtra(MainActivity.KEY);
-        position = getIntent().getStringExtra(MainActivity.POSITION);
+        position = getIntent().getIntExtra(MainActivity.POSITION, 0);
+        startVideo(path);
+
+    }
+
+    private void startVideo(String path) {
+        videoView = null;
+        videoView = (VideoView) findViewById(R.id.view);
         videoView.setVideoPath(path);
         videoView.setBackground(getResources().getDrawable(R.drawable.ipro));
-        videoView.setZOrderOnTop(true);
+//        videoView.setZOrderOnTop(true);
         Helpers.setScreenBrightness(getWindow(), Screen.Brightness.HIGH);
         videoView.setOnPreparedListener(this);
         videoView.setOnCompletionListener(this);
-
+        mediaController = new MediaController(CustomVideoView.this);
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
     }
 
     @Override
@@ -53,6 +66,19 @@ public class CustomVideoView extends Activity implements MediaPlayer.OnPreparedL
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        videoView.refreshDrawableState();
+        Log.i("TAG", String.valueOf(position));
+        if ((position+1) < MainActivity.sFilesInFolder.size()) {
+            position = position+1;
+            Log.i("TAG", "position ++");
+        } else {
+            position = 0;
+            Log.i("TAG", "position");
+        }
+        startVideo(MainActivity.path + File.separator +
+                AppGlobals.FOLDER + File.separator + MainActivity.sFilesInFolder.get(position));
+
     }
 
     @TargetApi(19)

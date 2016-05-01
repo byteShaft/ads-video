@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="#88030303">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -22,6 +23,9 @@
 
     <TextView
         android:id="@+id/FilePath"
+        android:padding="4dp"
+        android:layout_margin="2dp"
+        android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"/>

@@ -5,12 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -36,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
     public static File path = Environment.getExternalStorageDirectory();
-    public static ArrayList<String> filesInFolder;
+    public static ArrayList<String> sFilesInFolder;
     private CustomVideoView customVideoView;
     public static final String KEY = "path";
     public static final String POSITION = "position";
@@ -79,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadVideosAndSetAdapter() {
         mListView = (ListView) findViewById(R.id.video_list);
-        filesInFolder = GetFiles(path + "/Videos");
+        sFilesInFolder = GetFiles(path + File.separator + AppGlobals.FOLDER);
         ArrayAdapter<String> arrayAdapter = new VideoListAdapter(this,
-                android.R.layout.simple_list_item_1, filesInFolder);
+                android.R.layout.simple_list_item_1, sFilesInFolder);
         mListView.setAdapter(arrayAdapter);
         mListView.setOnItemClickListener(new ListItemCLickListener());
 
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent(getApplicationContext(), CustomVideoView.class);
-            intent.putExtra(KEY, path + "/Videos/" + parent.getItemAtPosition(position).toString());
+            intent.putExtra(KEY, path + File.separator+ AppGlobals.FOLDER + File.separator+ parent.getItemAtPosition(position).toString());
             intent.putExtra("position", position);
             startActivity(intent);
         }
@@ -129,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.title.setText(filesInFolder.get(position));
+            holder.title.setText(sFilesInFolder.get(position));
             new ThumbnailCreationTask(getApplicationContext(), holder, position).execute();
             return convertView;
         }
