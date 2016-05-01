@@ -1,9 +1,7 @@
 package byteshaft.com.advideos;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -24,7 +22,7 @@ public class ThumbnailCreationTask extends AsyncTask<Void, Void, Bitmap> {
     protected Bitmap doInBackground(Void... params) {
 
         return ThumbnailUtils.createVideoThumbnail
-                (MainActivity.path + "/Videos/" + MainActivity.filesInFolder.get(mHolder.position),
+                (MainActivity.path + "/Videos/" + MainActivity.sFilesInFolder.get(mHolder.position),
                         MediaStore.Video.Thumbnails.MICRO_KIND);
 
     }

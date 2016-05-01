@@ -3,12 +3,13 @@ package byteshaft.com.advideos;
 import android.app.Application;
 import android.content.Context;
 
-/**
- * Created by shahid on 29/04/2016.
- */
+
 public class AppGlobals extends Application {
 
     private static Context sContext;
+    public static final String FOLDER = "Videos";
+    public static final String PASSWORD_STATUS = "password_status";
+    public static final String PASSWORD = "password";
 
     @Override
     public void onCreate() {
