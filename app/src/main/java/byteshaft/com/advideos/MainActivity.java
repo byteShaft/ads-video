@@ -72,6 +72,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             loadVideosAndSetAdapter();
         }
+
+        if (getIntent().getBooleanExtra("play", false)) {
+            Intent intent = new Intent(getApplicationContext(), CustomVideoView.class);
+            intent.putExtra(KEY, path + File.separator + AppGlobals.FOLDER +
+                    File.separator + sFilesInFolder.get(0));
+            intent.putExtra("position", 0);
+            Log.i("TAG", "BOOT");
+            startActivity(intent);
+        }
     }
 
     @Override
