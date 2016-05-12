@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -21,12 +22,13 @@ import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -40,7 +42,7 @@ public class CustomVideoView extends Activity implements
     public VideoView videoView;
     public int position;
     public int file = 0;
-    private MediaController mediaController;
+    private CustomVideoController mediaController;
     public static CustomVideoView customVideoView;
     private static int playerPosition = 0;
     private final int OVERLAY_PERMISSION_REQ_CODE = 0;
@@ -83,9 +85,20 @@ public class CustomVideoView extends Activity implements
         videoView.seekTo(seek);
         videoView.setBackground(getResources().getDrawable(R.drawable.ipro));
         Helpers.setScreenBrightness(getWindow(), Screen.Brightness.HIGH);
-        mediaController = new MediaController(CustomVideoView.this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
+        mediaController = new CustomVideoController(CustomVideoView.this);
+        mediaController.setAnchorView((ViewGroup) videoView.getRootView());
+//        videoView.setMediaController(mediaController);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mediaController.isShowing()) {
+            mediaController.hide();
+        } else {
+            mediaController.show();
+        }
+        return true;
+
     }
 
     @Override
@@ -96,8 +109,9 @@ public class CustomVideoView extends Activity implements
             public void run() {
                 videoView.setBackground(null);
                 videoView.start();
+                mediaController.setMediaPlayer(videoView);
             }
-        }, 1000);
+        }, 5000);
     }
 
 
@@ -224,6 +238,8 @@ public class CustomVideoView extends Activity implements
                         stopLockTask();
                     }
                     // kill app
+                    setVolume(CustomVideoController.getVolumeLevel());
+
                     android.os.Process.killProcess(android.os.Process.myPid());
                     finish();
                     dialog.dismiss();
@@ -232,6 +248,11 @@ public class CustomVideoView extends Activity implements
                 }
             }
         });
+    }
+
+    private void setVolume(int level) {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC, level, 0);
     }
 
     private static class Screen {
